@@ -1,0 +1,16 @@
+# Virtual environment
+.venv/
+
+# Secrets and local settings
+.env
+
+# Data files (large, and reproducible from the pipeline)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Python and Jupyter clutter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
