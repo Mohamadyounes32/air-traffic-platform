@@ -1,3 +1,13 @@
+-- Restores a missing leading 'N'
+CREATE OR REPLACE FUNCTION analytics.normalize_tail(t TEXT) RETURNS TEXT
+LANGUAGE sql IMMUTABLE AS $fn$
+    SELECT CASE
+        WHEN s ~ '^N[1-9][0-9A-Z]{0,4}$' THEN s
+        WHEN s ~ '^[1-9][0-9A-Z]{0,4}$'  THEN 'N' || s
+        ELSE NULL
+    END
+    FROM (SELECT upper(btrim(t)) AS s) x
+$fn$;
 -- ============ DIMENSIONS ============
 
 CREATE TABLE IF NOT EXISTS analytics.dim_date (

@@ -24,8 +24,8 @@ ON CONFLICT (airport_key) DO UPDATE
         state        = EXCLUDED.state;
 
 INSERT INTO analytics.dim_aircraft (tail_number)
-SELECT DISTINCT tail_number
+SELECT DISTINCT analytics.normalize_tail(tail_number)
 FROM clean.flights
 WHERE source_file = ANY(%(files)s)
-  AND tail_number ~ '^N[1-9][0-9A-Z]{0,4}$'
+  AND analytics.normalize_tail(tail_number) IS NOT NULL
 ON CONFLICT (tail_number) DO NOTHING;

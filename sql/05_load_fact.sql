@@ -26,5 +26,5 @@ SELECT
     f.carrier_delay, f.weather_delay, f.nas_delay, f.security_delay, f.late_aircraft_delay,
     f.source_file
 FROM clean.flights f
-LEFT JOIN analytics.dim_aircraft a ON a.tail_number = f.tail_number
+LEFT JOIN analytics.dim_aircraft a ON a.tail_number = analytics.normalize_tail(f.tail_number)
 WHERE f.source_file = %(source_file)s;
