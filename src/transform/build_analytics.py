@@ -27,6 +27,7 @@ def main() -> None:
         # Schema script has no parameters, so it can contain any characters
         with conn.cursor() as cur:
             cur.execute(read_sql("03_analytics_schema.sql"))
+            cur.execute(read_sql("08_views.sql"))
         conn.commit()
 
         with conn.cursor() as cur:

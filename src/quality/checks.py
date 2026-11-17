@@ -24,6 +24,11 @@ CHECKS = [
           """SELECT (SELECT count(*) FROM clean.flights)
                   + (SELECT COALESCE(sum(duplicates_removed), 0) FROM clean.build_log)
                   - (SELECT count(*) FROM raw.bts_ontime)"""),
+                  
+          Check("fact_matches_clean", "analytics", "ERROR",
+          "Fact rows equal clean rows",
+          """SELECT (SELECT count(*) FROM analytics.fact_flights)
+                  - (SELECT count(*) FROM clean.flights)"""),
 
        Check("no_duplicate_flights", "analytics", "ERROR",
           "No flight appears twice on its natural key",

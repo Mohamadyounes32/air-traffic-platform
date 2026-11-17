@@ -16,3 +16,4 @@ The `Tail_Number` column. It represents the aircraft's unique registration, whic
 3. Always state the denominator.
 4. **Rule 4 (revised):** tail numbers are normalized by restoring a missing leading "N". Any tail that still doesn't match the US registration pattern maps to the `UNKNOWN` aircraft and is excluded from propagation analysis.
 5. **Rule 5 (new):** a small number of delayed flights have no recorded cause (cause minutes are all empty). They remain in delayed-flight counts, and cause shares are computed over attributed minutes.
+
