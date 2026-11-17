@@ -119,6 +119,5 @@ def main() -> None:
             results[status] = results.get(status, 0) + 1
 
     logger.info("SUMMARY  %s", results)
-
-if __name__ == "__main__":
-    main()
+    if results.get("failed"):
+        raise SystemExit(1)
