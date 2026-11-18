@@ -24,21 +24,20 @@ CHECKS = [
           """SELECT (SELECT count(*) FROM clean.flights)
                   + (SELECT COALESCE(sum(duplicates_removed), 0) FROM clean.build_log)
                   - (SELECT count(*) FROM raw.bts_ontime)"""),
-                  
-          Check("fact_matches_clean", "analytics", "ERROR",
+
+    Check("fact_matches_clean", "analytics", "ERROR",
           "Fact rows equal clean rows",
           """SELECT (SELECT count(*) FROM analytics.fact_flights)
                   - (SELECT count(*) FROM clean.flights)"""),
 
-       Check("no_duplicate_flights", "analytics", "ERROR",
+    # ---------- integrity ----------
+    Check("no_duplicate_flights", "analytics", "ERROR",
           "No flight appears twice on its natural key",
           """SELECT count(*) FROM (
                  SELECT 1 FROM analytics.fact_flights
                  GROUP BY date_key, airline_key, flight_number,
                           origin_airport_key, dest_airport_key, crs_dep_time
                  HAVING count(*) > 1) d"""),
-    
-    # ---------- integrity ----------
 
     Check("no_missing_days", "analytics", "ERROR",
           "Every calendar day between the first and last flight has flights",
@@ -101,4 +100,39 @@ CHECKS = [
           "Cancellation rate is between 0.2 and 5 percent",
           "SELECT round(100.0 * avg(is_cancelled::int), 2) FROM analytics.fact_flights",
           min_value=0.2, max_value=5),
+
+    # ---------- live layer (Step 9b) ----------
+    Check("live_last_success_age_minutes", "raw", "WARN",
+          "A successful poll happened in the last 15 minutes (collector running)",
+          """SELECT COALESCE(EXTRACT(EPOCH FROM (now() - max(requested_at))) / 60, 99999)
+             FROM raw.opensky_poll WHERE http_status = 200""",
+          min_value=0, max_value=15),
+
+    Check("live_error_rate_24h_pct", "raw", "WARN",
+          "At most 5 percent of polls in the last 24 hours failed",
+          """SELECT COALESCE(ROUND(100.0 * COUNT(*) FILTER (WHERE http_status <> 200)
+                                  / NULLIF(COUNT(*), 0), 2), 0)
+             FROM raw.opensky_poll WHERE requested_at > now() - INTERVAL '24 hours'""",
+          min_value=0, max_value=5),
+
+    Check("live_max_gap_minutes_24h", "raw", "WARN",
+          "No gap longer than 15 minutes between successful polls in the last 24 hours",
+          """SELECT COALESCE(MAX(gap), 0) FROM (
+                 SELECT EXTRACT(EPOCH FROM (requested_at - LAG(requested_at) OVER (ORDER BY requested_at))) / 60 AS gap
+                 FROM raw.opensky_poll
+                 WHERE http_status = 200 AND requested_at > now() - INTERVAL '24 hours') g""",
+          min_value=0, max_value=15),
+
+    Check("live_credits_above_reserve_24h", "raw", "WARN",
+          "Remaining API credits never fell below the 300-credit reserve",
+          """SELECT COALESCE(MIN(credits_remaining), 99999) FROM raw.opensky_poll
+             WHERE requested_at > now() - INTERVAL '24 hours' AND credits_remaining IS NOT NULL""",
+          min_value=300, max_value=None),
+
+    Check("live_every_poll_summarized", "analytics", "ERROR",
+          "Every successful poll older than one hour appears in the national summary",
+          """SELECT COUNT(*) FROM raw.opensky_poll p
+             WHERE p.http_status = 200 AND p.api_time IS NOT NULL
+               AND p.api_time < now() - INTERVAL '1 hour'
+               AND NOT EXISTS (SELECT 1 FROM analytics.live_national n WHERE n.poll_id = p.poll_id)"""),
 ]

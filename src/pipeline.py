@@ -31,6 +31,7 @@ def main() -> None:
         ("build_clean",     ["-m", "src.transform.build_clean"]),
         ("build_analytics", ["-m", "src.transform.build_analytics"]),
         ("enrich_airports", ["-m", "src.ingest.load_airports"]),
+        ("live_summaries", ["-m", "src.transform.build_live_summaries"]),
         ("quality_checks",  ["-m", "src.quality.run_checks"]),
     ]
 
