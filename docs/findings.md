@@ -88,3 +88,7 @@
 ### Finding: Anomaly detection found a massive event in November 2025 (z=61.8).
 - Number: 2025-11-08 to 2025-11-13 had a 12.1% cancellation rate. Other explained events: CrowdStrike (July 2024), Hurricane Milton (Oct 2024), Hurricane Debby (Aug 2024).
 - Query: Step 8c (Anomaly detection)
+
+### Finding: November 2025 cancellations strongly align with the FAA flight-reduction order.
+- Number: The gap between affected airports (40 major hubs) and other flights widened from ~0 pts before Nov 7 to 9.9 pts on Nov 9. The cancellation cause was overwhelmingly `NAS` (National Air System), peaking at 7.61% on Nov 9.
+- Caveat: The gap narrowed after Nov 11, but airlines didn't exactly hit the mandated percentages (4%-10%), likely due to practical constraints. The "other flights" group also saw a slight bump, likely due to network effects.
