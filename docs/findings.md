@@ -70,3 +70,21 @@
 - Number: At ORD, median taxi-out goes from 15.5 min at <25% load to 24.75 min at >100% load. At ATL, it only goes from 14.0 to 16.0 min.
 - Caveat: Time of day is tangled with load, so we can't fully isolate congestion from daily propagation patterns.
 - Query: Step 8b (Congestion chart)
+
+### Finding: System-wide delay rate is 21.2% (median -2 mins, p90 45 mins).
+- Number: 13.88M operated flights. DFW is 6.8 points above average (28%), but the top 5 airports are within 2 points of each other, so ranking is weak.
+- Query: Step 8b (System-wide baseline)
+
+### Finding: Delta and Endeavor suffered disproportionately during CrowdStrike.
+- Number: Delta peaked at 47.4% cancellation, Endeavor at 49.0%. Others peaked at 10.9% and recovered in 2 days. Delta and Endeavor took 5-6 days to recover.
+- Caveat: This shows magnitude and duration, not cause. Endeavor operates as Delta Connection.
+- Query: Step 8c (Event study)
+
+### Finding: Scheduled ground time acts as a buffer, but the 13.9% vs 10.3% gap persists across all times of day.
+- Number: For 90+ min late inbound flights, next departure delay is 99.5% (<45m ground), 75.6% (120-179m ground), and 46.6% (180+m ground).
+- Caveat: The time-of-day check showed the gap is not a Simpson's paradox. Long ground times might simply be scheduled for inherently delayed routes/hubs.
+- Query: Step 8c (Propagation checks)
+
+### Finding: Anomaly detection found a massive event in November 2025 (z=61.8).
+- Number: 2025-11-08 to 2025-11-13 had a 12.1% cancellation rate. Other explained events: CrowdStrike (July 2024), Hurricane Milton (Oct 2024), Hurricane Debby (Aug 2024).
+- Query: Step 8c (Anomaly detection)
