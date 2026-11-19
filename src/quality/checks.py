@@ -135,4 +135,20 @@ CHECKS = [
              WHERE p.http_status = 200 AND p.api_time IS NOT NULL
                AND p.api_time < now() - INTERVAL '1 hour'
                AND NOT EXISTS (SELECT 1 FROM analytics.live_national n WHERE n.poll_id = p.poll_id)"""),
+
+        Check("reporting_network_matches_fact", "reporting", "ERROR",
+          "Daily network table accounts for every fact row",
+          """SELECT (SELECT COALESCE(SUM(scheduled_flights), 0) FROM reporting.daily_network)
+                  - (SELECT COUNT(*) FROM analytics.fact_flights)"""),
+
+    Check("reporting_airline_matches_fact", "reporting", "ERROR",
+          "Daily airline table accounts for every fact row",
+          """SELECT (SELECT COALESCE(SUM(scheduled_flights), 0) FROM reporting.daily_airline)
+                  - (SELECT COUNT(*) FROM analytics.fact_flights)"""),
+
+    Check("reporting_airport_matches_fact", "reporting", "ERROR",
+          "Daily airport table accounts for every fact row",
+          """SELECT (SELECT COALESCE(SUM(scheduled_flights), 0) FROM reporting.daily_airport)
+                  - (SELECT COUNT(*) FROM analytics.fact_flights)"""),
+
 ]

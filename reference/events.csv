@@ -1,0 +1,6 @@
+event_name,event_type,start_date,end_date,source_url,notes
+CrowdStrike outage and Delta disruption,IT outage,2024-07-19,2024-07-24,,Delta recovery per event study (tolerance 1 pt)
+FAA flight reductions during government shutdown,ATC staffing,2025-11-07,,https://faa.gov/newsroom/us-transportation-secretary-sean-p-duffy-faa-administrator-bryan-bedford-outline-series,End date: fill from your analysis
+Hurricane Milton,Hurricane,2024-10-08,2024-10-11,,Landfall near Siesta Key Florida
+Hurricane Debby,Hurricane,2024-08-02,2024-08-06,,Made landfall in Florida
+Winter Storm Blair,Winter Storm,2025-01-05,2025-01-10,,Caused widespread disruptions
